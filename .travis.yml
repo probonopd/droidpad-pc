@@ -5,8 +5,7 @@ dist: trusty
 
 install:
   - sudo apt-get -y install build-essential g++ autotools-dev wx*-headers libwxgtk-*-dev libboost-dev qrencode
-  - source /opt/qt*/bin/qt*-env.sh
-
+  
 script:
   - ./configure --prefix=/usr
   - make -j$(nproc)
