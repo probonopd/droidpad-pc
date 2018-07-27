@@ -4,7 +4,7 @@ sudo: require
 dist: trusty
 
 install:
-  - sudo apt-get -y install build-essential g++ autotools-dev wx*-headers libwxgtk-*-dev libboost-dev libqrencode-dev
+  - sudo apt-get -y install build-essential g++ autotools-dev wx2.8-headers libwxgtk2.8-dev libboost-dev libqrencode-dev
   
 script:
   - ./configure --prefix=/usr
