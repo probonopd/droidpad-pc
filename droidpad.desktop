@@ -1,0 +1,7 @@
+[Desktop Entry]
+Name=DroidPad
+Type=Application
+Exec=droidpad
+Icon=droidpad
+StartupWMClass=droidpad
+Categories=Game;

@@ -1,0 +1,30 @@
+language: cpp
+compiler: gcc
+sudo: require
+dist: trusty
+
+install:
+  - sudo apt-get -y install build-essential g++ autotools-dev wx2.8-headers libwxgtk2.8-dev libboost-dev libqrencode-dev
+  
+script:
+  - ./configure --prefix=/usr
+  - make -j$(nproc)
+  - make install DESTDIR=$(readlink -f appdir) ; find appdir/
+  - mkdir -p appdir/usr/share/applications/ ; cp ./droidpad.desktop appdir/usr/share/applications/ # FIXME
+  - mkdir -p appddir/usr/share/icons/hicolor/128x128/apps/ ; cp ./data/iconlarge.png appddir/usr/share/icons/hicolor/128x128/apps/droidpad.png # FIXME
+  - wget -c -nv "https://github.com/probonopd/linuxdeployqt/releases/download/continuous/linuxdeployqt-continuous-x86_64.AppImage"
+  - chmod a+x linuxdeployqt-continuous-x86_64.AppImage
+  - unset QTDIR; unset QT_PLUGIN_PATH ; unset LD_LIBRARY_PATH
+  - export VERSION=$(git rev-parse --short HEAD) # linuxdeployqt uses this for naming the file
+  - ./linuxdeployqt-continuous-x86_64.AppImage appdir/usr/share/applications/*.desktop -appimage
+
+after_success:
+  - find appdir -executable -type f -exec ldd {} \; | grep " => /usr" | cut -d " " -f 2-3 | sort | uniq
+  - # curl --upload-file DroidPad*.AppImage https://transfer.sh/DroidPad-git.$(git rev-parse --short HEAD)-x86_64.AppImage
+  - wget -c https://github.com/probonopd/uploadtool/raw/master/upload.sh
+  - bash upload.sh DroidPad*.AppImage*
+  
+branches:
+  except:
+    - # Do not build tags that we create when we upload to GitHub Releases
+    - /^(?i:continuous)/
